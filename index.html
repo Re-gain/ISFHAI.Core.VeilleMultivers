@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Galaxie Veille Technologique</title>
+  <link rel="icon" href="data:,">
   <style>
     :root {
       --color-bg: #0b0f1a;
@@ -84,8 +85,8 @@
   <div id="modal" class="modal"></div>
 
   <script type="module">
-    import * as THREE from 'https://cdn.skypack.dev/three@0.150.1';
-    import { OrbitControls } from 'https://cdn.skypack.dev/three@0.150.1/examples/jsm/controls/OrbitControls.js';
+    import * as THREE from 'https://unpkg.com/three@0.150.1/build/three.module.js';
+    import { OrbitControls } from 'https://unpkg.com/three@0.150.1/examples/jsm/controls/OrbitControls.js';
 
     const isMobile = /Mobi|Android/i.test(navigator.userAgent);
     const scene = new THREE.Scene();
