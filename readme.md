@@ -9,11 +9,21 @@ Ce dépôt contient l'interface et les données de la galaxie de veille technolo
 
 L’application web permet la visualisation dynamique des branches de veille, structurées depuis un fichier `veilleData.js` :
 
-- **Veille 01 : Technologies IA Générales**
-- **Veille 02 : Interfaces homme-machine et neurotechnologies**
-- **Veille 03 : Matériaux avancés et lumière**
-- **Veille 04 : Jumeaux numériques et simulations**
-- *(... jusqu’à Veille 15)*
+- **Veille 01** : Technologies IA Générales  
+- **Veille 02** : Interfaces homme-machine et neurotechnologies  
+- **Veille 03** : Matériaux avancés et lumière  
+- **Veille 04** : Jumeaux numériques et simulations  
+- **Veille 05** : Énergie & Durabilité  
+- **Veille 06** : Santé et Médecine Augmentée  
+- **Veille 07** : Sciences Cognitives et Neurosciences  
+- **Veille 08** : Agriculture & Alimentation Intelligente  
+- **Veille 09** : Éducation & Formation Adaptative  
+- **Veille 10** : Environnement et Climat  
+- **Veille 11** : Mobilité & Transports Autonomes  
+- **Veille 12** : Art, Culture et Créativité IA  
+- **Veille 13** : Économie, Crypto, Blockchain  
+- **Veille 14** : Sécurité Numérique & Défense  
+- **Veille 15** : Espace, Exploration & Colonisation
 
 Toutes les données sont chargées dynamiquement dans l'interface `index.html` via `veille.js`.
 
@@ -21,16 +31,13 @@ Toutes les données sont chargées dynamiquement dans l'interface `index.html` v
 
 ## 🔧 Structure du dépôt
 
+ISFHAI.Core.VeilleMultivers/
 ├── index.html # Page principale HTML
 ├── veille.js # Script de génération d’arbre interactif
-├── veilleData.js # Données JSON formatées pour l’arbre (15 branches)
-├── vercel.json # Configuration de déploiement Vercel
+├── veilleData.js # Données structurées des 15 branches
+├── vercel.json # Configuration pour déploiement Vercel
 ├── LICENSE # Licence GNU GPL v3
 └── README.md # Ce fichier
-
-yaml
-Copier
-Modifier
 
 ---
 
