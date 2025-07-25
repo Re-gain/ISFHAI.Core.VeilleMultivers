@@ -1,114 +1,145 @@
 // main.js
-import * as THREE from 'https://unpkg.com/three@0.150.1/build/three.module.js';
-import { OrbitControls } from 'https://unpkg.com/three@0.150.1/examples/jsm/controls/OrbitControls.js';
-
-const isMobile = /Mobi|Android/i.test(navigator.userAgent);
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
-
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.dampingFactor = 0.05;
-controls.rotateSpeed = 0.3;
-
-const sun = new THREE.Mesh(
-  new THREE.SphereGeometry(1.2, 64, 64),
-  new THREE.MeshBasicMaterial({ color: 0xffcc00 })
-);
-scene.add(sun);
-
-const planetMaterial = new THREE.MeshStandardMaterial({ color: 0x3fdad8 });
-const light = new THREE.PointLight(0xffffff, 1.2);
-light.position.set(5, 5, 5);
-scene.add(light);
-
-const labels = document.getElementById('labels');
-const modal = document.getElementById('modal');
-
-import { veilleData } from './veilleData.js';
-const planets = [];
-
-veilleData.systemes.forEach((system, sIndex) => {
-  system.planetes.forEach((entry, i) => {
-    const geo = new THREE.SphereGeometry(0.3, 32, 32);
-    const planet = new THREE.Mesh(geo, planetMaterial.clone());
-    const orbitRadius = 2.5 + i * 0.9 + sIndex * 3;
-    planet.userData = {
-      angle: Math.random() * Math.PI * 2,
-      radius: orbitRadius,
-      label: entry.nom,
-      fiche: entry.fiche
-    };
-    planet.scale.set(0, 0, 0);
-    scene.add(planet);
-    planets.push(planet);
-
-    const label = document.createElement('div');
-    label.className = 'label';
-    label.innerText = entry.nom;
-    labels.appendChild(label);
-    planet.userData.labelElement = label;
-  });
-});
-
-camera.position.z = isMobile ? 10 : 7;
-const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
-
-window.addEventListener('click', (event) => {
-  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-  raycaster.setFromCamera(mouse, camera);
-  const intersects = raycaster.intersectObjects(planets);
-  if (intersects.length > 0) {
-    const planet = intersects[0].object;
-    modal.innerHTML = `<h2>${planet.userData.label}</h2><iframe src="${planet.userData.fiche}" width="100%" height="400px"></iframe>`;
-    modal.classList.add('active');
-  }
-});
-
-document.getElementById('toggleTheme').addEventListener('click', () => {
-  const root = document.documentElement;
-  if (root.style.getPropertyValue('--color-bg') === '#0b0f1a') {
-    root.style.setProperty('--color-bg', '#f4f4f4');
-    root.style.setProperty('--color-fg', '#111');
-  } else {
-    root.style.setProperty('--color-bg', '#0b0f1a');
-    root.style.setProperty('--color-fg', '#aef');
-  }
-  document.body.style.backgroundColor = root.style.getPropertyValue('--color-bg');
-});
-
-function animate() {
-  requestAnimationFrame(animate);
-  planets.forEach((planet, idx) => {
-    if (planet.scale.x < 1) {
-      const s = planet.scale.x + 0.02;
-      planet.scale.set(s, s, s);
+export const veilleData = {
+  galaxie: "Veille Technologique Cosmique",
+  systemes: [
+    {
+      theme: "Technologie",
+      soleil: "🌞 Technologie & Innovation",
+      planetes: [
+        { nom: "IA Générative", fiche: "fiche_ia_gen.html" },
+        { nom: "Edge AI & IoT", fiche: "fiche_edge.html" },
+        { nom: "Cyber-IA", fiche: "fiche_cyber.html" },
+        { nom: "Collaboration Homme-Machine", fiche: "fiche_collab.html" },
+        { nom: "IA Éthique", fiche: "fiche_ethique.html" },
+        { nom: "IA Explicable", fiche: "fiche_explicable.html" }
+      ]
+    },
+    {
+      theme: "Sciences",
+      soleil: "🧬 Sciences Exploratoires",
+      planetes: [
+        { nom: "Matière Programmable", fiche: "fiche_matiere.html" },
+        { nom: "Biologie Synthétique", fiche: "fiche_biologie.html" },
+        { nom: "Neurosciences", fiche: "fiche_neuro.html" },
+        { nom: "Mémoire Quantique", fiche: "fiche_quantique.html" }
+      ]
+    },
+    {
+      theme: "Environnement",
+      soleil: "🌍 Écotechnologies",
+      planetes: [
+        { nom: "Énergie Verte", fiche: "fiche_energie.html" },
+        { nom: "Recyclage Avancé", fiche: "fiche_recyclage.html" },
+        { nom: "Climat Modélisé", fiche: "fiche_climat.html" }
+      ]
+    },
+    {
+      theme: "Médecine",
+      soleil: "🧠 Santé Augmentée",
+      planetes: [
+        { nom: "Imagerie IA", fiche: "fiche_imagerie.html" },
+        { nom: "Thérapie Génétique", fiche: "fiche_therapie.html" },
+        { nom: "Diagnostic Prédictif", fiche: "fiche_diagnostic.html" }
+      ]
+    },
+    {
+      theme: "Espace",
+      soleil: "🚀 Exploration Cosmique",
+      planetes: [
+        { nom: "Colonisation Mars", fiche: "fiche_mars.html" },
+        { nom: "Télescopes IA", fiche: "fiche_telescope.html" },
+        { nom: "Sondes Autonomes", fiche: "fiche_sondes.html" }
+      ]
+    },
+    {
+      theme: "Éducation",
+      soleil: "📚 Apprentissage Intelligent",
+      planetes: [
+        { nom: "Tutoring IA", fiche: "fiche_tutoring.html" },
+        { nom: "Formation Personnalisée", fiche: "fiche_formation.html" },
+        { nom: "Simulation Immersive", fiche: "fiche_simulation.html" }
+      ]
+    },
+    {
+      theme: "Économie",
+      soleil: "💹 Finance & IA",
+      planetes: [
+        { nom: "Trading IA", fiche: "fiche_trading.html" },
+        { nom: "Crypto & Blockchain", fiche: "fiche_crypto.html" },
+        { nom: "Banque Augmentée", fiche: "fiche_banque.html" }
+      ]
+    },
+    {
+      theme: "Société",
+      soleil: "🌐 Humanité & Futur",
+      planetes: [
+        { nom: "IA et Droit", fiche: "fiche_droit.html" },
+        { nom: "Travail et Automatisation", fiche: "fiche_travail.html" },
+        { nom: "Éthique de l'IA", fiche: "fiche_ethique_societe.html" }
+      ]
+    },
+    {
+      theme: "Sécurité",
+      soleil: "🛡️ Protection Numérique",
+      planetes: [
+        { nom: "Surveillance IA", fiche: "fiche_surveillance.html" },
+        { nom: "Détection de Menaces", fiche: "fiche_menace.html" },
+        { nom: "Sécurité Physique Assistée", fiche: "fiche_securite.html" }
+      ]
+    },
+    {
+      theme: "Transport",
+      soleil: "🚗 Mobilité Augmentée",
+      planetes: [
+        { nom: "Véhicules Autonomes", fiche: "fiche_vehicules.html" },
+        { nom: "Logistique IA", fiche: "fiche_logistique.html" },
+        { nom: "Trafic Intelligent", fiche: "fiche_trafic.html" }
+      ]
+    },
+    {
+      theme: "Culture & Art",
+      soleil: "🎨 Créativité IA",
+      planetes: [
+        { nom: "Musique Générative", fiche: "fiche_musique.html" },
+        { nom: "Art Assisté", fiche: "fiche_art.html" },
+        { nom: "Narration Interactive", fiche: "fiche_narration.html" }
+      ]
+    },
+    {
+      theme: "Robotique",
+      soleil: "🤖 Autonomie Mécanique",
+      planetes: [
+        { nom: "Robots Humanoïdes", fiche: "fiche_humanoides.html" },
+        { nom: "Swarm Intelligence", fiche: "fiche_swarm.html" },
+        { nom: "Maintenance IA", fiche: "fiche_maintenance.html" }
+      ]
+    },
+    {
+      theme: "Énergie",
+      soleil: "⚡ Technologies Durables",
+      planetes: [
+        { nom: "Batteries IA", fiche: "fiche_batteries.html" },
+        { nom: "Stockage Intelligent", fiche: "fiche_stockage.html" },
+        { nom: "Grilles Décentralisées", fiche: "fiche_grilles.html" }
+      ]
+    },
+    {
+      theme: "Agriculture",
+      soleil: "🌾 Agro-Technologie",
+      planetes: [
+        { nom: "IA Prédictive", fiche: "fiche_agro_ia.html" },
+        { nom: "Cultures Optimisées", fiche: "fiche_culture.html" },
+        { nom: "Robotique Agricole", fiche: "fiche_agrobot.html" }
+      ]
+    },
+    {
+      theme: "Habitat",
+      soleil: "🏡 Intelligences Domestiques",
+      planetes: [
+        { nom: "Smart Home IA", fiche: "fiche_home.html" },
+        { nom: "Énergie Domestique", fiche: "fiche_energie_maison.html" },
+        { nom: "Bien-être Connecté", fiche: "fiche_bienetre.html" }
+      ]
     }
-    planet.userData.angle += 0.002 + idx * 0.0003;
-    planet.position.x = Math.cos(planet.userData.angle) * planet.userData.radius;
-    planet.position.z = Math.sin(planet.userData.angle) * planet.userData.radius;
-
-    const vector = planet.position.clone().project(camera);
-    const x = (vector.x * 0.5 + 0.5) * window.innerWidth;
-    const y = (-vector.y * 0.5 + 0.5) * window.innerHeight;
-    if (planet.userData.labelElement) {
-      planet.userData.labelElement.style.left = `${x}px`;
-      planet.userData.labelElement.style.top = `${y}px`;
-    }
-  });
-  controls.update();
-  renderer.render(scene, camera);
-}
-
-window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-});
-
-animate();
+  ]
+};
