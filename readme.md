@@ -1,5 +1,5 @@
 # ISFHAI.Core.VeilleMultivers
-
+/!\ En cours de developpement pas operationnel /!\
 **ISFHAI – Système de Veille Technologique Multiverselle**  
 Ce dépôt contient l'interface et les données de la galaxie de veille technologique du projet ISFHAI, organisé en 15 axes stratégiques.
 
