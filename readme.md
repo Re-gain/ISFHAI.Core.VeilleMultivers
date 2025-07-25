@@ -29,7 +29,9 @@ Toutes les données sont chargées dynamiquement dans l'interface `index.html` v
 
 ---
 
-## 🔧 Structure du dépôt
+### 🔧 Structure du dépôt
+
+```
 
 ISFHAI.Core.VeilleMultivers/
 ├── index.html         # Page principale HTML
@@ -39,8 +41,7 @@ ISFHAI.Core.VeilleMultivers/
 ├── LICENSE            # Licence GNU GPL v3
 └── README.md          # Ce fichier
 
-
----
+```
 
 ## 🚀 Déploiement
 
