@@ -3,86 +3,77 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Galaxie Veille Technologique</title>
-  <link rel="icon" href="data:,">
+  <title>Galaxie de Veille Technologique</title>
   <style>
-    :root {
-      --color-bg: #0b0f1a;
-      --color-fg: #aef;
-      --color-light: #3fdad8;
-      --font-main: 'Orbitron', sans-serif;
-    }
-    body {
-      margin: 0;
-      overflow: hidden;
-      background-color: var(--color-bg);
-      font-family: var(--font-main);
-    }
-    canvas {
-      display: block;
-    }
-    #info {
-      position: absolute;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: var(--color-fg);
-      font-size: clamp(1rem, 2.5vw, 1.5rem);
-      text-shadow: 0 0 10px #6366f1;
-      z-index: 1000;
-    }
-    .label {
-      position: absolute;
-      color: var(--color-light);
-      font-size: clamp(0.6rem, 1vw, 1rem);
-      text-shadow: 1px 1px 2px #000;
-      transform: perspective(500px) rotateX(10deg);
-      pointer-events: none;
-      white-space: nowrap;
-    }
-    .modal {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(20, 20, 30, 0.95);
-      border: 1px solid var(--color-light);
-      padding: 2rem;
-      border-radius: 10px;
-      color: #fff;
-      z-index: 9999;
-      display: none;
-      max-width: 90vw;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-    .modal.active {
-      display: block;
-    }
-    #toggleTheme {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      z-index: 1000;
-      background: transparent;
-      border: 1px solid var(--color-light);
-      color: var(--color-light);
-      padding: 0.5rem 1rem;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    @media (max-width: 768px) {
-      #info {
-        font-size: 1rem;
-      }
-    }
+    body { margin: 0; overflow: hidden; background-color: black; }
+    canvas { display: block; }
   </style>
 </head>
 <body>
-  <div id="info">🌞 Galaxie de Veille Technologique</div>
-  <button id="toggleTheme">🌒</button>
-  <div id="labels"></div>
-  <div id="modal" class="modal"></div>
-  <script type="module" src="veille.js"></script>
+  <script type="module">
+    import * as THREE from 'https://cdn.skypack.dev/three@0.150.1';
+    import { OrbitControls } from 'https://cdn.skypack.dev/three@0.150.1/examples/jsm/controls/OrbitControls.js';
+    import { veilleData } from './veilleData.js';
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    camera.position.z = 100;
+
+    const createSphere = (color, size = 2) => {
+      return new THREE.Mesh(
+        new THREE.SphereGeometry(size, 32, 32),
+        new THREE.MeshStandardMaterial({ color })
+      );
+    };
+
+    const light = new THREE.PointLight(0xffffff, 1, 0);
+    light.position.set(0, 0, 0);
+    scene.add(light);
+
+    const soleilMaterials = [0xffd700, 0xff8c00, 0xffff00, 0xff6347, 0xff1493];
+    const planetMaterials = [0x00ffff, 0x00ff00, 0x8a2be2, 0xff69b4, 0x1e90ff];
+
+    let angleOffset = 0;
+    veilleData.systemes.forEach((systeme, index) => {
+      const soleil = createSphere(soleilMaterials[index % soleilMaterials.length], 4);
+      const radius = 40;
+      const angle = angleOffset + index * ((2 * Math.PI) / veilleData.systemes.length);
+      soleil.position.set(radius * Math.cos(angle), radius * Math.sin(angle), 0);
+      scene.add(soleil);
+
+      systeme.planetes.forEach((planete, i) => {
+        const mesh = createSphere(planetMaterials[i % planetMaterials.length], 1.5);
+        const pr = 6 + i * 4;
+        const pa = angle + (i * 0.4);
+        mesh.position.set(soleil.position.x + pr * Math.cos(pa), soleil.position.y + pr * Math.sin(pa), 0);
+        mesh.userData = { url: planete.fiche };
+        scene.add(mesh);
+      });
+    });
+
+    window.addEventListener('click', (event) => {
+      const mouse = new THREE.Vector2(
+        (event.clientX / window.innerWidth) * 2 - 1,
+        -(event.clientY / window.innerHeight) * 2 + 1
+      );
+      const raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(scene.children);
+      if (intersects.length > 0 && intersects[0].object.userData.url) {
+        window.open(intersects[0].object.userData.url, '_blank');
+      }
+    });
+
+    const animate = () => {
+      requestAnimationFrame(animate);
+      renderer.render(scene, camera);
+    };
+    animate();
+  </script>
 </body>
 </html>
