@@ -32,12 +32,13 @@ Toutes les données sont chargées dynamiquement dans l'interface `index.html` v
 ## 🔧 Structure du dépôt
 
 ISFHAI.Core.VeilleMultivers/
-├── index.html # Page principale HTML
-├── veille.js # Script de génération d’arbre interactif
-├── veilleData.js # Données structurées des 15 branches
-├── vercel.json # Configuration pour déploiement Vercel
-├── LICENSE # Licence GNU GPL v3
-└── README.md # Ce fichier
+├── index.html         # Page principale HTML
+├── veille.js          # Script de génération d’arbre interactif
+├── veilleData.js      # Données structurées des 15 branches
+├── vercel.json        # Configuration pour déploiement Vercel
+├── LICENSE            # Licence GNU GPL v3
+└── README.md          # Ce fichier
+
 
 ---
 
